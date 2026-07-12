@@ -45,69 +45,6 @@
         }
       ],
       "Name": "Vertical"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 87
-        }
-      ],
-      "Name": "W"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 65
-        }
-      ],
-      "Name": "A"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 83
-        }
-      ],
-      "Name": "S"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 68
-        }
-      ],
-      "Name": "D"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 69
-        }
-      ],
-      "Name": "E"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 81
-        }
-      ],
-      "Name": "Q"
-    },
-    {
-      "Type": "Button",
-      "Buttons": [
-        {
-          "KeyCode": 39
-        }
-      ],
-      "Name": "\u0027"
     }
   ]
 }
