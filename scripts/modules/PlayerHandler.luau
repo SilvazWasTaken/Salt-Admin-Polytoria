@@ -59,6 +59,14 @@ module.PlayerAdded = function(player)
 		end
 	end
 
+	if main.Outdated and player.IsCreator then
+		main.Notification(
+			player,
+			main.Format("Salt Admin is outdated! (This version: %s | New version: %s)", main.Version, main.Outdated),
+			"Info"
+		)
+	end
+
 	if
 		(not main.Settings.RankAllTesting and not world.IsLocalTest or main.Settings.RankAllTesting and true)
 		and player.IsCreator
@@ -148,12 +156,25 @@ end
 main.Modules.Client.ClientNetwork.InvokedServer:Connect(function(p, data)
 	local func = data:GetString("Function")
 	local str1 = data:GetString("String1")
+	local num1 = data:GetNumber("Number1")
 	print("Func: " .. func)
 
 	if func == "Init" then
 		LoadedPlayers[p.UserID] = true
 	elseif func == "CmdBar" then
 		main.GetModule("Parser").Parse(p, str1)
+	elseif func == "LoadLogs" then
+		local logs, count = main.RefreshLogs(num1)
+
+		local data = NetMessage.New()
+		data:AddString("Function", "OpenLogs")
+		data:AddNumber("Number1", count)
+
+		for i = 1, #logs do
+			data:AddString("Log" .. i, logs[i])
+		end
+
+		main.Modules.Client.ClientNetwork:InvokeClient(data, p)
 	end
 end)
 

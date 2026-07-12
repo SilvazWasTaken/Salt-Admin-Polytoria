@@ -221,9 +221,15 @@ module.Parse = function(speaker, originalMessage)
 		main.commandsExecuted[speaker] = main.commandsExecuted[speaker] or 0
 		main.commandsExecuted[speaker] = main.commandsExecuted[speaker] + 1
 
+		local argString = ""
+
+		for _, arg in pairs(args) do
+			argString ..= " " .. arg
+		end
+
 		table.insert(main.Logs, {
 			["Time"] = os.time(),
-			["Command"] = originalMessage,
+			["Command"] = main.Settings.Prefix .. commandName .. argString,
 			["Speaker"] = speaker.Name,
 		})
 

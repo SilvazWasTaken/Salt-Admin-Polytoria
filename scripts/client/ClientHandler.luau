@@ -7,6 +7,8 @@ local cmdPrefix = ""
 local muted = false
 local canCmdBar, canCmdBar2 = false, false
 local spin
+local logsPage = 1
+local logsMax = 0
 
 local GUI = PlayerGUI:WaitChild("GUI")
 
@@ -104,6 +106,36 @@ network.InvokedClient:Connect(function(data)
 	end
 
 	if func == "OpenLogs" then
+		if bool1 then
+			logsPage = 1
+		end
+
+		local visualLogs = {}
+
+		for i = 1, 20 do
+			visualLogs[i] = data:GetString("Log" .. i)
+		end
+
+		local logCount = num1
+		GUI.BG2.Heading.Count.Text =
+			string.format("Page %s of %s (%s)", tostring(logsPage), math.ceil(logCount / 20), logCount)
+
+		logsMax = logCount
+
+		for _, v in pairs(GUI.BG2.Scroll.Vertical:GetChildren()) do
+			v:Destroy()
+		end
+
+		for count, log in pairs(visualLogs) do
+			local logui = GUI.Log:Clone()
+			logui.UILabel.Text = log
+			if count % 2 == 0 then
+				logui.Color = Color.FromHex("#323232")
+			end
+			logui.Visible = true
+			logui.Parent = GUI.BG2.Scroll.Vertical
+		end
+
 		GUI.BG2.Visible = true
 	end
 
@@ -134,6 +166,30 @@ network.InvokedClient:Connect(function(data)
 		end)
 		GUI:WaitChild("BG2"):WaitChild("Heading"):WaitChild("Close").Clicked:Connect(function()
 			GUI.BG2.Visible = false
+		end)
+		GUI:WaitChild("BG2"):WaitChild("Heading"):WaitChild("ArrowLeft").Clicked:Connect(function()
+			logsPage -= 1
+
+			if logsPage < 1 then
+				logsPage = 1
+			end
+
+			local data = NetMessage.New()
+			data:AddString("Function", "LoadLogs")
+			data:AddNumber("Number1", logsPage)
+			network:InvokeServer(data)
+		end)
+		GUI:WaitChild("BG2"):WaitChild("Heading"):WaitChild("ArrowRight").Clicked:Connect(function()
+			if logsPage + 1 > math.ceil(logsMax / 20) then
+				return
+			end
+
+			logsPage += 1
+
+			local data = NetMessage.New()
+			data:AddString("Function", "LoadLogs")
+			data:AddNumber("Number1", logsPage)
+			network:InvokeServer(data)
 		end)
 		GUI:WaitChild("BG3"):WaitChild("Heading"):WaitChild("Close").Clicked:Connect(function()
 			GUI.BG3.Visible = false
@@ -262,6 +318,7 @@ network.InvokedClient:Connect(function(data)
 		if str == "On" then
 			flight = true
 			Environment.Gravity = Vector3.New(0, 0, 0)
+			Players.LocalPlayer.Velocity = Vector3.New(0, 0, 0)
 		else
 			flight = false
 			Players.LocalPlayer.Rotation = Vector3.New(0, 0, 0)

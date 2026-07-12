@@ -9,19 +9,8 @@ main.Initialize = function(s)
 	main.ServerBanned = {}
 	main.Logs = {}
 
-	Players.PlayerRemoved:Connect(function(plr)
-		local jail = Environment:FindChild(tostring(plr.UserID) .. "Jail")
-
-		if jail then
-			jail:Destroy()
-		end
-	end)
-
+	main.Version = 1
 	main.BanDSTesting = "5"
-
-	for _, c in pairs(main.GetModule("ServerCommands")) do
-		main.Commands[c.Name] = true
-	end
 
 	main.Settings = table.clone(s)
 	main.Settings.Prefix = s.Prefix or ";"
@@ -33,11 +22,39 @@ main.Initialize = function(s)
 		main.Settings.Gamepasses[id] = rank
 	end
 
+	for i, c in pairs(main.GetModule("ServerCommands")) do
+		main.Commands[c.Name] = true
+
+		if c.Name == "cmdbar" then
+			c.Rank = main.Settings.Cmdbar
+		elseif c.Name == "cmdbar2" then
+			c.Rank = main.Settings.Cmdbar2
+		end
+
+		if c.Hidden and not main.Settings.EasterEggs then
+			c.Function = function() end
+		end
+	end
+
 	main.Debris = Instance.New("Folder")
 	main.Debris.Name = "SaltDebris"
 	main.Debris.Parent = Environment
 
 	main.MakeGUI()
+
+	if main.Settings.VersionCheck then
+		spawn(function()
+			local newVer = Http.GetAsync(
+				"https://raw.githubusercontent.com/SilvazWasTaken/Salt-Admin-Polytoria/refs/heads/main/AutoDetectVERSION.json"
+			)
+			if newVer and string.sub(newVer, 1, 1) == "{" then
+				newVer = json.parse(newVer).version
+				if main.Version < newVer then
+					main.Outdated = newVer
+				end
+			end
+		end)
+	end
 
 	local Parser = main.GetModule("Parser")
 	Players.PlayerAdded:Connect(main.GetModule("PlayerHandler").PlayerAdded)
@@ -51,6 +68,14 @@ main.Initialize = function(s)
 		data:AddString("Function", "RecievePing")
 		data:AddInstance("Instance1", main.Modules.Storage.Audio.Notification)
 		main.Modules.Client.ClientNetwork:InvokeClient(data, plr)
+	end)
+
+	Players.PlayerRemoved:Connect(function(plr)
+		local jail = Environment:FindChild(tostring(plr.UserID) .. "Jail")
+
+		if jail then
+			jail:Destroy()
+		end
 	end)
 end
 
@@ -71,12 +96,6 @@ main.MakeGUI = function()
 			if rankOverride then
 				command.Rank = rankOverride
 			end
-		end
-
-		if command.Name == "cmdbar" then
-			command.Rank = main.Settings.Cmdbar
-		elseif command.Name == "cmdbar2" then
-			command.Rank = main.Settings.Cmdbar2
 		end
 
 		if not CategorizedCommands[command.Rank + 1] then
@@ -199,28 +218,56 @@ main.RefreshRanks = function()
 	end
 end
 
-main.RefreshLogs = function()
+main.RefreshLogs = function(page)
 	local scroll = main.GUI.BG2.Scroll.Vertical
-	for _, v in pairs(scroll:GetChildren()) do
+	local logsFlipped = {}
+
+	for i, v in pairs(scroll:GetChildren()) do
 		v:Destroy()
 	end
 
-	local amount = 0
+	local t = 0
 	for count = #main.Logs, 1, -1 do
-		local log = main.Logs[count]
-		local logui = main.GUI.Log:Clone()
-		logui.UILabel.Text = string.format("[%s] %s: %s", os.date("%H:%M", log.Time), log.Speaker, log.Command)
-		if count % 2 == 0 then
-			logui.Color = Color.FromHex("#323232")
-		end
-		logui.Visible = true
-		logui.Parent = scroll
-		amount += 1
-
-		if amount > 40 then
-			return
-		end
+		t += 1
+		logsFlipped[t] = main.Logs[count]
 	end
+
+	local t = main.Paginate(logsFlipped, page, 20)
+	local logsVisual = {}
+
+	for count, log in pairs(t) do
+		logsVisual[count] = string.format("[%s] %s: %s", os.date("%H:%M", log.Time), log.Speaker, log.Command)
+	end
+
+	return logsVisual, #main.Logs
+
+	--	for count, log in pairs(t) do
+	--		local logui = main.GUI.Log:Clone()
+	--		logui.UILabel.Text = string.format("[%s] %s: %s", os.date("%H:%M", log.Time), log.Speaker, log.Command)
+	--		if count % 2 == 0 then
+	--			logui.Color = Color.FromHex("#323232")
+	--		end
+	--		logui.Visible = true
+	--		logui.Parent = scroll
+	--
+	--		print(logui.UILabel.Text)
+	--	end
+	--
+	--	for count = #main.Logs, 1, -1 do
+	--		local log = main.Logs[count]
+	--		local logui = main.GUI.Log:Clone()
+	--		logui.UILabel.Text = string.format("[%s] %s: %s", os.date("%H:%M", log.Time), log.Speaker, log.Command)
+	--		if count % 2 == 0 then
+	--			logui.Color = Color.FromHex("#323232")
+	--		end
+	--		logui.Visible = true
+	--		logui.Parent = scroll
+	--		amount += 1
+	--
+	--		if amount > 40 then
+	--			return
+	--		end
+	--	end
 end
 
 main.GetModule = function(moduleName)
@@ -398,6 +445,27 @@ main.GetUserIDFromName = function(name)
 		return userid
 	end
 	return nil
+end
+
+main.Paginate = function(tbl, page, pageSize)
+	local totalItems = #tbl
+	local totalPages = math.max(1, math.ceil(totalItems / pageSize))
+
+	if not totalPages then
+		return nil
+	end
+
+	page = math.max(1, math.min(page, totalPages))
+
+	local startIndex = (page - 1) * pageSize + 1
+	local endIndex = math.min(startIndex + pageSize - 1, totalItems)
+
+	local items = {}
+	for i = startIndex, endIndex do
+		items[#items + 1] = tbl[i]
+	end
+
+	return items, totalPages
 end
 
 return main

@@ -5,6 +5,7 @@ local settings = main.Settings
 -- smite
 -- banland
 -- gun
+-- poison
 
 local connections = {}
 
@@ -390,6 +391,10 @@ local module = {
 			jail.Position = args[1].Position + Vector3.New(0, 0.7, 0)
 
 			connections[jail.Name] = args[1].Respawned:Connect(function()
+				if not jail or not args[1] or not args[1].Position then
+					connections[jail.Name]:Disconnect()
+					return
+				end
 				args[1].Position = jail.Position
 			end)
 
@@ -415,10 +420,17 @@ local module = {
 		Alias = { "commandlogs" },
 		Args = {},
 		Function = function(speaker, args)
-			main.RefreshLogs()
+			local logs, count = main.RefreshLogs(1)
 
 			local data = NetMessage.New()
 			data:AddString("Function", "OpenLogs")
+			data:AddNumber("Number1", count)
+			data:AddBool("Bool1", true)
+
+			for i = 1, #logs do
+				data:AddString("Log" .. i, logs[i])
+			end
+
 			main.Modules.Client.ClientNetwork:InvokeClient(data, speaker)
 		end,
 	},
@@ -633,6 +645,19 @@ local module = {
 		end,
 	},
 
+	{
+		Name = "clear",
+		Rank = 2,
+		Description = "Clears all clones and inserted items in workspace",
+		Alias = { "clr" },
+		Args = {},
+		Function = function(speaker, args)
+			for _, v in pairs(main.Debris:GetChildren()) do
+				v:Destroy()
+			end
+		end,
+	},
+
 	{ -- Someone's always watching me
 		Name = "kidnap", -- Someone's always there
 		Rank = 2, -- When I'm sleeping he just waits
@@ -789,19 +814,6 @@ local module = {
 			local data = NetMessage.New()
 			data:AddString("Function", "CmdBar2")
 			main.Modules.Client.ClientNetwork:InvokeClient(data, speaker)
-		end,
-	},
-
-	{
-		Name = "clear",
-		Rank = 3,
-		Description = "Clears all clones and inserted items in workspace",
-		Alias = { "clr" },
-		Args = {},
-		Function = function(speaker, args)
-			for _, v in pairs(main.Debris:GetChildren()) do
-				v:Destroy()
-			end
 		end,
 	},
 
