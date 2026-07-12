@@ -157,7 +157,6 @@ main.Modules.Client.ClientNetwork.InvokedServer:Connect(function(p, data)
 	local func = data:GetString("Function")
 	local str1 = data:GetString("String1")
 	local num1 = data:GetNumber("Number1")
-	print("Func: " .. func)
 
 	if func == "Init" then
 		LoadedPlayers[p.UserID] = true

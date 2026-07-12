@@ -9,6 +9,9 @@ local canCmdBar, canCmdBar2 = false, false
 local spin
 local logsPage = 1
 local logsMax = 0
+local flyHelp = Instance.New("Part")
+flyHelp.Color = Color.New(0, 0, 0, 0)
+flyHelp.CanCollide = false
 
 local GUI = PlayerGUI:WaitChild("GUI")
 
@@ -68,20 +71,23 @@ function GetNextMovement()
 	end
 
 	if keysPressed["E"] or keysPressed["Space"] then
-		move = move + Vector3.New(0, 0.75, 0)
+		move = move + Vector3.New(0, 1, 0)
 	end
 
 	if keysPressed["Q"] or keysPressed["LeftShift"] then
-		move = move - Vector3.New(0, 0.75, 0)
+		move = move - Vector3.New(0, 1, 0)
 	end
 
 	return move
 end
 
-Hooks.Updated:Connect(function()
+Hooks.Updated:Connect(function(dt)
 	if flight then
-		Players.LocalPlayer.Position = Players.LocalPlayer.Position + GetNextMovement()
-		Players.LocalPlayer.Rotation = Vector3.New(-cam.Rotation.X, cam.Rotation.Y + 180, -cam.Rotation.Z)
+		flyHelp.Position = flyHelp.Position + GetNextMovement()
+		flyHelp.Rotation = Vector3.New(-cam.Rotation.X, cam.Rotation.Y + 180, -cam.Rotation.Z)
+
+		Players.LocalPlayer.Position = flyHelp.Position
+		Players.LocalPlayer.Rotation = flyHelp.Rotation
 	end
 
 	if spin then
@@ -319,10 +325,15 @@ network.InvokedClient:Connect(function(data)
 			flight = true
 			Environment.Gravity = Vector3.New(0, 0, 0)
 			Players.LocalPlayer.Velocity = Vector3.New(0, 0, 0)
+			flyHelp.Position = Players.LocalPlayer.Position
+
+			Players.LocalPlayer.CanMove = false
 		else
 			flight = false
 			Players.LocalPlayer.Rotation = Vector3.New(0, 0, 0)
 			Environment.Gravity = vec3
+
+			Players.LocalPlayer.CanMove = true
 		end
 	end
 

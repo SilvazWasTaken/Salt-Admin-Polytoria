@@ -4,6 +4,7 @@ settings = {
 	Ranks = {
 		{ 5, "Owner", { "Player1", 0 } },
 		{ 4, "HeadAdmin", { "", 0 } },
+		--{ 3.5, "SuperAdmin", { "", 0 } },
 		{ 3, "Admin", { "", 0 } },
 		{ 2, "Mod", { "", 0 } }, -- Can only use commands on one person at a time.
 		{ 1, "VIP", { "", 0 } }, -- Can only use commands on theirself.
