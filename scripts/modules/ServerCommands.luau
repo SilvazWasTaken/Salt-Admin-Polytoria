@@ -395,7 +395,10 @@ local module = {
 					connections[jail.Name]:Disconnect()
 					return
 				end
-				args[1].Position = jail.Position
+
+				pcall(function()
+					args[1].Position = jail.Position
+				end)
 			end)
 
 			wait(1)
