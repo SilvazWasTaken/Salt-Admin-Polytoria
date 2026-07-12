@@ -28,7 +28,7 @@ settings = {
 	Prefix = ";", -- The character you use before every command (e.g. ';jump me').
 	CommandLimitPerMinute = 60, -- Command limit per admin per minute
 
-	PlaytestUser = "Saltvaz", -- Replace "Player1" when playtesting with specified usernam,e
+	PlaytestUser = "", -- Replace "Player1" when playtesting with specified usernam,e
 	RankAllTesting = false, -- Set to true to give all testing players (Player2, Player3 etc) the 'Owner' rank
 
 	WelcomeRankNotice = true, -- The 'You're a [rankName]' notice that appears when you join the game. Set to false to disable

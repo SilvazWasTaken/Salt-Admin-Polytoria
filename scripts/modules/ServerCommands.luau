@@ -5,7 +5,6 @@ local settings = main.Settings
 -- smite
 -- banland
 -- gun
--- disco
 
 local connections = {}
 
