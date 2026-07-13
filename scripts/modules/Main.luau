@@ -10,7 +10,7 @@ main.Initialize = function(s)
 	main.Logs = {}
 
 	main.Version = 1
-	main.BanDSTesting = "5"
+	main.BanDSTesting = ""
 
 	main.Settings = table.clone(s)
 	main.Settings.Prefix = s.Prefix or ";"

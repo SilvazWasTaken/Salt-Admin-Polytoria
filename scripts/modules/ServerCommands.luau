@@ -2,9 +2,6 @@ local main = require(script.Parent.Parent.Main)
 local playerHandler = require(main.Modules.Server.PlayerHandler)
 local settings = main.Settings
 
--- banland
--- gun
-
 local connections = {}
 
 local module = {
@@ -581,7 +578,7 @@ local module = {
 		Alias = { "knife" },
 		Args = { "Player" },
 		Function = function(speaker, args)
-			local sword = main.Modules.Storage.Sword
+			local sword = main.Modules.Storage.Knife
 			sword:Clone().Parent = args[1].Inventory
 		end,
 	},

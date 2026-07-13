@@ -148,6 +148,9 @@ module.DisplayMessage = function(GUI, title, rank, content)
 
 	local t = Tween.NewTween()
 	t:TweenNumber(0, 148, 0.4, function(a)
+		if not message or not message.Color then
+			return
+		end
 		message.Color = Color.New(0, 0, 0, a / 255)
 	end)
 
@@ -155,6 +158,9 @@ module.DisplayMessage = function(GUI, title, rank, content)
 
 	local t = Tween.NewTween()
 	t:TweenNumber(0, 255, 0.4, function(a)
+		if not message or not message.Title or not message.Title.TextColor then
+			return
+		end
 		message.Title.TextColor = Color.New(255, 255, 255, a / 255)
 		message.Sub.TextColor = Color.New(255, 255, 255, a / 255)
 	end)
@@ -162,6 +168,9 @@ module.DisplayMessage = function(GUI, title, rank, content)
 
 	local t = Tween.NewTween()
 	t:TweenNumber(0, 255, 0.4, function(a)
+		if not message or not message.Content or not message.Content.TextColor then
+			return
+		end
 		message.Content.TextColor = Color.New(255, 255, 255, a / 255)
 	end)
 
@@ -182,11 +191,17 @@ module.DisplayMessage = function(GUI, title, rank, content)
 
 	local t = Tween.NewTween()
 	t:TweenNumber(255, 0, 0.4, function(a)
+		if not message or not message.Content or not message.Content.TextColor then
+			return
+		end
 		message.Content.TextColor = Color.New(255, 255, 255, a / 255)
 		message.Title.TextColor = Color.New(255, 255, 255, a / 255)
 		message.Sub.TextColor = Color.New(255, 255, 255, a / 255)
 	end)
 	t:TweenNumber(148, 0, 0.4, function(a)
+		if not message or not message.Color then
+			return
+		end
 		message.Color = Color.New(0, 0, 0, a / 255)
 	end)
 	wait(0.4)
