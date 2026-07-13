@@ -578,7 +578,7 @@ local module = {
 		Alias = { "knife" },
 		Args = { "Player" },
 		Function = function(speaker, args)
-			local sword = main.Modules.Storage.Knife
+			local sword = main.Knife
 			sword:Clone().Parent = args[1].Inventory
 		end,
 	},

@@ -18,6 +18,9 @@ main.Initialize = function(s)
 	main.Settings.Cmdbar = s.Cmdbar or 1
 	main.Settings.Cmdbar2 = s.Cmdbar2 or 3
 
+	main.Knife = main.Modules.Storage.Knife
+	main.Knife.Parent = Hidden
+
 	for id, rank in pairs(main.Settings.Badges) do
 		main.Settings.Gamepasses[id] = rank
 	end
