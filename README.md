@@ -7,7 +7,7 @@ There is lots of quality of life features too, like being able to run multiple c
 
 ## Setup
 Import the model, put it into Environment
-Optionally, change the settings in [Salt Admin > Settings]
+Optionally, change the settings by detaching the model and changing them in [Salt Admin > Settings]
 
 [Get it](https://github.com/SilvazWasTaken/Salt-Admin-Polytoria/releases/download/Release/Salt.Admin.ptmd)
 
