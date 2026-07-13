@@ -196,6 +196,9 @@ main.Modules.Client.ClientNetwork.InvokedServer:Connect(function(p, data)
 end)
 
 module.GiveRank = function(player, rank, handle)
+	if module.GetRank(player) == rank then
+		return
+	end
 	if not player:FindChild("Rank") then
 		local rankVal = Instance.New("NumberValue")
 		rankVal.Name = "Rank"
