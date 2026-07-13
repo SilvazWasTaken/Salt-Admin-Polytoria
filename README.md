@@ -10,5 +10,5 @@ Import the model, put it into Environment
 
 Optionally, change the settings by detaching the model and changing them in [Salt Admin > Settings]
 
-[Get it](https://github.com/SilvazWasTaken/Salt-Admin-Polytoria/releases/download/Release/Salt.Admin.ptmd)
+# [Get it](https://github.com/SilvazWasTaken/Salt-Admin-Polytoria/releases/download/Release/Salt.Admin.ptmd)
 
