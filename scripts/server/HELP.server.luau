@@ -8,7 +8,7 @@
 			╚═════╝░╚═╝░░╚═╝╚══════╝░░░╚═╝░░░  ╚═╝░░╚═╝╚═════╝░╚═╝░░░░░╚═╝╚═╝╚═╝░░╚══╝
 				
 			Open source cool admin commands for your game™
-			75+ commands ranging from moderation to fun
+			85+ commands ranging from moderation to fun
 			
 			GITHUB: https://github.com/SilvazWasTaken/Salt-Admin-Polytoria
 			
