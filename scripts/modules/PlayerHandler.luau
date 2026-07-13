@@ -219,10 +219,7 @@ module.GiveRank = function(player, rank, handle)
 	elseif handle == "Award" then
 		main.Notification(
 			player,
-			main.Format(
-				"You've unlocked the rank '%s'! Click to view the commands.",
-				main.GetRankName(highestGamepassRank)
-			),
+			main.Format("You've unlocked the rank '%s'! Click to view the commands.", main.GetRankName(rank)),
 			"Info",
 			"OpenCommands",
 			20
