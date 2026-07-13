@@ -2,7 +2,7 @@ settings = {
 
 	-- RANK, RANK NAMES & SPECIFIC USERS
 	Ranks = {
-		{ 5, "Owner", { "", 0 } },
+		{ 5, "Owner", { "Player1", 0 } },
 		{ 4, "HeadAdmin", { "", 0 } },
 		--{ 3.5, "SuperAdmin", { "", 0 } },
 		{ 3, "Admin", { "", 0 } },

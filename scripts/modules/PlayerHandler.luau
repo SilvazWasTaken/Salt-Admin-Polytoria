@@ -251,7 +251,7 @@ module.GetPlayer = function(name)
 end
 
 module.GetRank = function(p)
-	if p.Rank then
+	if p:FindChild("Rank") then
 		return p.Rank.Value
 	else
 		return 0
