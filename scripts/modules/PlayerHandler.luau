@@ -17,9 +17,14 @@ module.PlayerAdded = function(player)
 		player.Character:LoadAppearance(userid, true)
 
 		player.Respawned:Connect(function()
-			wait(0.5)
 			player.Character:LoadAppearance(userid, true)
 		end)
+	else
+		if main.Settings.ResetSizeOnSpawn then
+			player.Respawned:Connect(function()
+				player.Size = Vector3.New(1, 1, 1)
+			end)
+		end
 	end
 
 	local timeout = 0
@@ -62,7 +67,11 @@ module.PlayerAdded = function(player)
 	if main.Outdated and player.IsCreator then
 		main.Notification(
 			player,
-			main.Format("Salt Admin is outdated! (This version: %s | New version: %s)", main.Version, main.Outdated),
+			main.Format(
+				"Salt Admin is outdated! (This version: %s | New version: %s) [Only shown to creator]",
+				main.Version,
+				main.Outdated
+			),
 			"Info"
 		)
 	end

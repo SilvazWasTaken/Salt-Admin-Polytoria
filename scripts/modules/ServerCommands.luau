@@ -298,7 +298,7 @@ local module = {
 		Alias = { "skinny" },
 		Args = { "Player" },
 		Function = function(speaker, args)
-			args[1].Size = Vector3.New(args[1].Size.X, args[1].Size.Y * 1.5, args[1].Size.X * 0.5)
+			args[1].Size = Vector3.New(args[1].Size.X, args[1].Size.X * 1.5, args[1].Size.X * 0.5)
 		end,
 		UnFunction = function(speaker, args)
 			args[1].Size = Vector3.New(args[1].Size.X, args[1].Size.X, args[1].Size.X)
@@ -654,6 +654,12 @@ local module = {
 		Rank = 2,
 		Args = { "Number" },
 		Function = function(speaker, args)
+			if args[1] > 1000 then
+				args[1] = 1000
+			elseif args[1] < -1000 then
+				args[1] = -1000
+			end
+
 			if not main.OGGravity then
 				main.OGGravity = Environment.Gravity
 			end

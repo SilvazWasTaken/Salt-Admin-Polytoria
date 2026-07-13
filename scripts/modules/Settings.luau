@@ -39,6 +39,8 @@ settings = {
 	WarnIncorrectPrefix = true, -- Warn the user if using the wrong prefix | "Invalid prefix! Try using [correctPrefix][commandName] instead!"
 	DisableAllNotices = false, -- Set to true to disable all Salt's Admin notices.
 
+	ResetSizeOnSpawn = true, -- Resets size on respawn which fixes weird accessory scaling issues
+
 	ScaleLimit = 4, -- The maximum size players with a rank lower than 'IgnoreScaleLimit' can scale theirself. For example, players will be limited to ;size me 4 (if limit is 4) - any number above is blocked.
 	IgnoreScaleLimit = 3, -- Any ranks equal or above this value will ignore 'ScaleLimit'
 
