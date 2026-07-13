@@ -2,10 +2,8 @@ local main = require(script.Parent.Parent.Main)
 local playerHandler = require(main.Modules.Server.PlayerHandler)
 local settings = main.Settings
 
--- smite
 -- banland
 -- gun
--- poison
 
 local connections = {}
 
@@ -416,6 +414,73 @@ local module = {
 		end,
 	},
 
+	{
+		Name = "rocket",
+		Rank = 1,
+		Args = { "Player" },
+		Function = function(speaker, args)
+			local ourRocket = main.Modules.Storage.Rocket:Clone()
+			ourRocket.Position = args[1].Position
+			ourRocket.Rotation = args[1].Rotation
+			ourRocket.Parent = args[1].Character
+			ourRocket.Engine:Play()
+			ourRocket.Launch:Play()
+			wait(2)
+			ourRocket.Launch:Play()
+			ourRocket.Launch.Volume = 0.9
+
+			local data = NetMessage.New()
+			data:AddString("Function", "StartRocket")
+			main.Modules.Client.ClientNetwork:InvokeClient(data, args[1])
+
+			wait(5)
+
+			local expl = Instance.New("Explosion")
+			expl.Position = args[1].Position
+			expl.Parent = Environment
+			args[1]:Kill()
+			flying = false
+			ourRocket:Destroy()
+		end,
+	},
+
+	{
+		Name = "smite",
+		Rank = 1,
+		Alias = { "lightning", "thunder" },
+		Args = { "Player" },
+		Function = function(speaker, args)
+			local cloud = main.Modules.Storage.SmiteCloud:Clone()
+
+			local doing = true
+
+			spawn(function()
+				while doing do
+					wait()
+					cloud.Position = args[1].Position + Vector3.New(0, 5, 0)
+				end
+			end)
+			cloud.Parent = Environment
+
+			wait(3)
+			for _, p in pairs(cloud:GetChildren()) do
+				if string.find(p.Name, "Lightning") then
+					p.Color = Color.FromHex("#0074ff")
+				end
+			end
+			doing = false
+
+			args[1]:Kill()
+			cloud.Sound:Play()
+			local expl = Instance.New("Explosion")
+			expl.Position = args[1].Position
+			expl.Parent = Environment
+
+			wait(2)
+			cloud:Destroy()
+		end,
+	},
+
 	-- mod --
 	{
 		Name = "logs",
@@ -486,36 +551,6 @@ local module = {
 			expl.Position = args[1].Position
 			expl.Parent = Environment
 			args[1]:Kill()
-		end,
-	},
-
-	{
-		Name = "rocket",
-		Rank = 2,
-		Args = { "Player" },
-		Function = function(speaker, args)
-			local ourRocket = main.Modules.Storage.Rocket:Clone()
-			ourRocket.Position = args[1].Position
-			ourRocket.Rotation = args[1].Rotation
-			ourRocket.Parent = args[1].Character
-			ourRocket.Engine:Play()
-			ourRocket.Launch:Play()
-			wait(2)
-			ourRocket.Launch:Play()
-			ourRocket.Launch.Volume = 0.9
-
-			local data = NetMessage.New()
-			data:AddString("Function", "StartRocket")
-			main.Modules.Client.ClientNetwork:InvokeClient(data, args[1])
-
-			wait(5)
-
-			local expl = Instance.New("Explosion")
-			expl.Position = args[1].Position
-			expl.Parent = Environment
-			args[1]:Kill()
-			flying = false
-			ourRocket:Destroy()
 		end,
 	},
 
@@ -786,10 +821,27 @@ local module = {
 	{
 		Name = "damage",
 		Rank = 2,
-		Alias = { "dmg " },
+		Alias = { "dmg" },
 		Args = { "Player", "Number" },
 		Function = function(speaker, args)
 			args[1].Health -= args[2]
+		end,
+	},
+
+	{
+		Name = "poison",
+		Rank = 2,
+		Args = { "Player" },
+		Function = function(speaker, args)
+			spawn(function()
+				while wait(0.35) do
+					if args[1].IsDead then
+						break
+					end
+
+					args[1].Health -= 1
+				end
+			end)
 		end,
 	},
 
