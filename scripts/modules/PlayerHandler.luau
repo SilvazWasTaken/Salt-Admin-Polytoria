@@ -84,7 +84,6 @@ module.PlayerAdded = function(player)
 		(not main.Settings.RankAllTesting and not world.IsLocalTest or main.Settings.RankAllTesting and true)
 		and player.IsCreator
 	then
-		print("creator")
 		module.GiveRank(player, 5, "Welcome")
 	elseif savedRank then
 		module.GiveRank(player, savedRank, "Welcome")
@@ -135,12 +134,8 @@ module.HandleBan = function(plr, reason, time)
 	local reason = reason or bans:GetAsync(uid .. "Reason" .. main.BanDSTesting)
 	local time = time or bans:GetAsync(uid .. "Time" .. main.BanDSTesting)
 
-	print("Handling ban")
-
 	if reason then
-		print("Ban found")
 		if time then
-			print("time found")
 			local remaining = time - os.time()
 			local days = math.floor(remaining / 86400)
 			remaining = remaining % 86400
@@ -163,7 +158,6 @@ module.HandleBan = function(plr, reason, time)
 				return true
 			end
 		else
-			print("Time not found, its a perm ban")
 			plr:Kick(string.format("You have been permanently banned. Reason: %s", reason))
 			return true
 		end

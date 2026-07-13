@@ -1272,8 +1272,6 @@ local module = {
 		Function = function(speaker, args)
 			args[1] = main.FallbackHex(args[1])
 
-			print(Color.FromHex(args[1]))
-
 			local t = Tween.NewTween()
 			t:TweenColor(Lighting.FogColor, Color.FromHex(args[1]), 2, function(t)
 				Lighting.FogColor = t

@@ -411,8 +411,6 @@ main.Notification = function(player, message, type, func, time)
 	else
 		main.Modules.Client.ClientNetwork:InvokeClient(data, player)
 	end
-
-	print("Sent notification: " .. tostring(message))
 end
 
 main.Format = function(message, ...)
