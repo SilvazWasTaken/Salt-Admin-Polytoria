@@ -84,13 +84,18 @@ module.PlayerAdded = function(player)
 		(not main.Settings.RankAllTesting and not world.IsLocalTest or main.Settings.RankAllTesting and true)
 		and player.IsCreator
 	then
+		print("creator")
 		module.GiveRank(player, 5, "Welcome")
 	elseif savedRank then
 		module.GiveRank(player, savedRank, "Welcome")
 	elseif foundRank then
 		module.GiveRank(player, foundRank, "Welcome")
 	elseif main.Settings.FreeAdmin then
-		module.GiveRank(player, main.GetRankNumber(main.Settings.FreeAdmin), "Welcome")
+		local rank = main.GetRankNumber(main.Settings.FreeAdmin)
+
+		if rank then
+			module.GiveRank(player, main.GetRankNumber(main.Settings.FreeAdmin), "Welcome")
+		end
 	end
 
 	if main.Settings.Gamepasses then
