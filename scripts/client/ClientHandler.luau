@@ -74,7 +74,7 @@ function GetNextMovement()
 		move = move + Vector3.New(0, 1, 0)
 	end
 
-	if keysPressed["Q"] or keysPressed["LeftShift"] then
+	if keysPressed["Q"] or keysPressed["Shift"] then
 		move = move - Vector3.New(0, 1, 0)
 	end
 
@@ -86,8 +86,15 @@ Hooks.Updated:Connect(function(dt)
 		flyHelp.Position = flyHelp.Position + GetNextMovement()
 		flyHelp.Rotation = Vector3.New(-cam.Rotation.X, cam.Rotation.Y + 180, -cam.Rotation.Z)
 
+		if Vector3.Distance(Players.LocalPlayer.Position, flyHelp.Position) > 5 then -- account for teleporting
+			flyHelp.Position = Players.LocalPlayer.Position
+			flyHelp.Rotation = Players.LocalPlayer.Rotation
+		end
+
 		Players.LocalPlayer.Position = flyHelp.Position
 		Players.LocalPlayer.Rotation = flyHelp.Rotation
+
+		Players.LocalPlayer.CanMove = false
 	end
 
 	if spin then
@@ -108,7 +115,7 @@ network.InvokedClient:Connect(function(data)
 	local bool2 = data:GetBool("Bool2")
 
 	if func == "OpenGUI" then
-		GUI.BG.Visible = true
+		clientGui.OpenBG(GUI, GUI.BG)
 	end
 
 	if func == "OpenLogs" then
@@ -142,11 +149,15 @@ network.InvokedClient:Connect(function(data)
 			logui.Parent = GUI.BG2.Scroll.Vertical
 		end
 
-		GUI.BG2.Visible = true
+		clientGui.OpenBG(GUI, GUI.BG2)
 	end
 
 	if func == "OpenRanks" then
-		GUI.BG3.Visible = true
+		clientGui.OpenBG(GUI, GUI.BG3)
+	end
+
+	if func == "OpenBans" then
+		clientGui.OpenBG(GUI, GUI.BG4)
 	end
 
 	if func == "CanCmdBar" then
@@ -199,6 +210,9 @@ network.InvokedClient:Connect(function(data)
 		end)
 		GUI:WaitChild("BG3"):WaitChild("Heading"):WaitChild("Close").Clicked:Connect(function()
 			GUI.BG3.Visible = false
+		end)
+		GUI:WaitChild("BG4"):WaitChild("Heading"):WaitChild("Close").Clicked:Connect(function()
+			GUI.BG4.Visible = false
 		end)
 		GUI:WaitChild("CmdBar2"):WaitChild("Heading"):WaitChild("Close").Clicked:Connect(function()
 			GUI.CmdBar2.Visible = false

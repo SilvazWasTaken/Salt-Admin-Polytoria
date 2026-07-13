@@ -90,6 +90,9 @@ module.ParseArguments = function(argsTypes, args, speaker, command)
 				main.Notification(speaker, main.Format("Invalid number '%s'.", args[i]), "Error")
 				return nil
 			end
+			if string.lower(args[i]) == "nan" or string.lower(args[i]) == "-nan" then
+				args[i] = "0"
+			end
 			args[i] = tonumber(args[i])
 
 			if args[i] > 100000000 then
@@ -125,7 +128,7 @@ module.Parse = function(speaker, originalMessage)
 	local message = string.gsub(string.lower(originalMessage), "%c", "")
 	local messageCap = string.gsub(originalMessage, "%c", "")
 
-	if not checkPrefix(string.sub(message, 1, 1)) then
+	if not checkPrefix(string.sub(message, 1, 1), true) then
 		return
 	end
 

@@ -218,6 +218,79 @@ main.RefreshRanks = function()
 	end
 end
 
+main.RefreshBans = function()
+	local scroll = main.GUI.BG4.Scroll.Vertical
+
+	for _, obj in pairs(scroll:GetChildren()) do
+		obj:Destroy()
+	end
+
+	local bans = Datastore:GetDatastore("SaltBans")
+	local list = bans:GetAsync("List")
+
+	if not list then
+		bans:Disconnect()
+		return
+	end
+
+	list = json.parse(list)
+
+	local count = 0
+	for userid, ban in pairs(list) do
+		if ban.Time and os.time() > ban.Time then
+			continue
+		end -- temp ban expired
+
+		count += 1
+		local banFrame = main.Modules.Storage.PlayerBan:Clone()
+
+		local image = PTImageAsset.New()
+		image.ImageType = Enums.ImageType.UserAvatarHeadshot
+		image.ImageID = tonumber(userid)
+
+		if count % 2 == 0 then
+			banFrame.Color = Color.FromHex("#323232")
+		end
+
+		if ban.Time then
+			local remaining = ban.Time - os.time()
+			local days = math.floor(remaining / 86400)
+			remaining = remaining % 86400
+			local hours = math.floor(remaining / 3600)
+			remaining = remaining % 3600
+			local minutes = math.floor(remaining / 60)
+
+			banFrame.UILabel.Text = userid
+				.. " - "
+				.. ban.Reason
+				.. " ["
+				.. string.format("%sD %sH %sM", days, hours, minutes)
+				.. "]"
+		else
+			banFrame.UILabel.Text = userid .. " - " .. ban.Reason
+		end
+
+		spawn(function()
+			local plrInfo = Http.GetAsync("https://api.polytoria.com/v1/users/" .. userid)
+			if plrInfo and json.parse(plrInfo) then
+				plrInfo = json.parse(plrInfo)
+			else
+				plrInfo = {
+					["username"] = userid,
+				}
+			end
+
+			banFrame.UILabel.Text = plrInfo.username .. string.sub(banFrame.UILabel.Text, #userid + 1)
+		end)
+
+		banFrame.UIImage.Image = image
+
+		banFrame.Parent = scroll
+	end
+
+	bans:Disconnect()
+end
+
 main.RefreshLogs = function(page)
 	local scroll = main.GUI.BG2.Scroll.Vertical
 	local logsFlipped = {}
@@ -236,7 +309,18 @@ main.RefreshLogs = function(page)
 	local logsVisual = {}
 
 	for count, log in pairs(t) do
-		logsVisual[count] = string.format("[%s] %s: %s", os.date("%H:%M", log.Time), log.Speaker, log.Command)
+		if not log.Time then
+			log.Time = os.time()
+		end
+		if not log.Speaker then
+			log.Speaker = Players:GetPlayers()[1]
+		end
+		if not log.Command then
+			log.Command = "Error"
+		end
+		pcall(function()
+			logsVisual[count] = string.format("[%s] %s: %s", os.date("%H:%M", log.Time), log.Speaker, log.Command)
+		end)
 	end
 
 	return logsVisual, #main.Logs
@@ -382,10 +466,14 @@ main.ExecuteCommand = function(command, speaker, args, unFunction)
 	end
 
 	if unFunction and command.UnFunction then
-		spawn(command.UnFunction, speaker, args)
+		pcall(function()
+			spawn(command.UnFunction, speaker, args)
+		end)
 	end
 	if not unFunction and command.Function then
-		spawn(command.Function, speaker, args)
+		pcall(function()
+			spawn(command.Function, speaker, args)
+		end)
 	end
 end
 
@@ -466,6 +554,34 @@ main.Paginate = function(tbl, page, pageSize)
 	end
 
 	return items, totalPages
+end
+
+main.UpdateBanList = function(ds, userid, remove, reason, time)
+	local list = ds:GetAsync("List")
+
+	if not list then
+		list = {}
+	else
+		list = json.parse(list)
+		if not list then
+			list = {}
+		end
+	end
+
+	if not remove then
+		list[tostring(userid)] = {
+			Reason = reason,
+			Time = time,
+		}
+	else
+		list[tostring(userid)] = nil
+	end
+
+	local text = json.serialize(list)
+	-- printing it crashes the game
+	--print(tostring(text))
+	--	print(text)
+	ds:SetAsync("List", text)
 end
 
 return main

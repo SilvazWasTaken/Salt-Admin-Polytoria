@@ -2,6 +2,40 @@ local module = {}
 local hinting = false
 local notifs = {}
 
+module.OpenBG = function(GUI, BG)
+	local wasOpen = nil
+
+	for _, bg in pairs(GUI:GetChildren()) do
+		if string.sub(bg.Name, 1, 2) == "BG" then
+			if bg.Visible then
+				wasOpen = bg
+			end
+			bg.Visible = false
+		end
+	end
+
+	BG.Visible = true
+
+	if wasOpen == BG then
+		return
+	end
+
+	if not module.OGScales then
+		module.OGScales = {}
+	end
+
+	if not module.OGScales[BG.Name] then
+		module.OGScales[BG.Name] = Vector2.New(BG.SizeRelative.X, BG.SizeRelative.Y)
+	end
+
+	BG.SizeRelative = Vector2.New(module.OGScales[BG.Name].X, 0)
+
+	local t = Tween.NewTween()
+	t:TweenVector2(Vector2.New(module.OGScales[BG.Name].X, 0), module.OGScales[BG.Name], 0.2, function(t)
+		BG.SizeRelative = t
+	end)
+end
+
 module.CreateNotification = function(GUI, notif, func, time)
 	local NotifTemplate = script.Parent.Parent.Storage:WaitChild("Notification"):Clone() -- ew sorry
 	NotifTemplate.Content.Text = notif
@@ -16,13 +50,13 @@ module.CreateNotification = function(GUI, notif, func, time)
 
 	if func == "OpenCommands" then
 		NotifTemplate:WaitChild("Click").Clicked:Connect(function()
-			GUI.BG.Visible = true
+			module.OpenBG(GUI, GUI.BG)
 			module.CloseNotification(NotifTemplate)
 		end)
 	end
 
 	local t = Tween.NewTween()
-	t:TweenVector2(Vector2.New(0, 0), OGSize, 0.25, function(t)
+	t:TweenVector2(Vector2.New(OGSize.X, 0), OGSize, 0.25, function(t)
 		NotifTemplate.SizeRelative = t
 	end)
 
@@ -51,7 +85,7 @@ module.CloseNotification = function(notif, index)
 		return
 	end
 	local t = Tween.NewTween()
-	t:TweenVector2(notif.SizeRelative, Vector2.New(0, 0), 0.25, function(t)
+	t:TweenVector2(notif.SizeRelative, Vector2.New(notif.SizeRelative.X, 0), 0.25, function(t)
 		if notif then
 			notif.SizeRelative = t
 		end

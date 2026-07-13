@@ -451,16 +451,21 @@ local module = {
 		Args = { "Player" },
 		Function = function(speaker, args)
 			local cloud = main.Modules.Storage.SmiteCloud:Clone()
+			cloud.Parent = Environment
 
 			local doing = true
 
+			local plr = args[1]
+
 			spawn(function()
-				while doing do
+				while true do
+					if not doing then
+						break
+					end
 					wait()
-					cloud.Position = args[1].Position + Vector3.New(0, 5, 0)
+					cloud.Position = plr.Position + Vector3.New(0, 6, 0)
 				end
 			end)
-			cloud.Parent = Environment
 
 			wait(3)
 			for _, p in pairs(cloud:GetChildren()) do
@@ -472,9 +477,11 @@ local module = {
 
 			args[1]:Kill()
 			cloud.Sound:Play()
-			local expl = Instance.New("Explosion")
-			expl.Position = args[1].Position
-			expl.Parent = Environment
+			pcall(function()
+				local expl = Instance.New("Explosion")
+				expl.Position = args[1].Position
+				expl.Parent = Environment
+			end)
 
 			wait(2)
 			cloud:Destroy()
@@ -500,6 +507,20 @@ local module = {
 			end
 
 			main.Modules.Client.ClientNetwork:InvokeClient(data, speaker)
+		end,
+	},
+
+	{
+		Name = "banland",
+		Rank = 2,
+		Alias = { "bans" },
+		Function = function(speaker, args)
+			local data = NetMessage.New()
+			data:AddString("Function", "OpenBans")
+			data:AddInstance("Instance1", main.GUI)
+			main.Modules.Client.ClientNetwork:InvokeClient(data, speaker)
+
+			main.RefreshBans()
 		end,
 	},
 
@@ -650,30 +671,6 @@ local module = {
 	},
 
 	{
-		Name = "gravity",
-		Rank = 2,
-		Args = { "Number" },
-		Function = function(speaker, args)
-			if args[1] > 1000 then
-				args[1] = 1000
-			elseif args[1] < -1000 then
-				args[1] = -1000
-			end
-
-			if not main.OGGravity then
-				main.OGGravity = Environment.Gravity
-			end
-			Environment.Gravity = Vector3.New(0, -args[1], 0)
-		end,
-		UnFunction = function(speaker, args)
-			if main.OGGravity then
-				Environment.Gravity = main.OGGravity
-				main.OGGravity = nil
-			end
-		end,
-	},
-
-	{
 		Name = "clone",
 		Rank = 2,
 		Description = "Creates a clone of the specified player",
@@ -692,7 +689,7 @@ local module = {
 	{
 		Name = "clear",
 		Rank = 2,
-		Description = "Clears all clones and inserted items in workspace",
+		Description = "Clears all clones and inserted items",
 		Alias = { "clr" },
 		Args = {},
 		Function = function(speaker, args)
@@ -765,7 +762,7 @@ local module = {
 			moveVan = true
 			ourVan.EvilLaugh:Play()
 			wait(5)
-			if not args[1].IsDead then
+			if not args[1].IsDead and args[1] and args[1].Position then
 				args[1]:Kill()
 				local expl = Instance.New("Explosion")
 				expl.Position = args[1].Position
@@ -1100,6 +1097,11 @@ local module = {
 				saltAudio.Parent = Environment
 			end
 
+			if args[1] == 0 then
+				saltAudio:Stop()
+				return
+			end
+
 			local soundInfo = Http.GetAsync("https://api.polytoria.com/v1/store/" .. tostring(args[1]))
 
 			if not soundInfo then
@@ -1190,6 +1192,9 @@ local module = {
 		Rank = 3,
 		Args = {},
 		Function = function(speaker, args)
+			if main.Disco then
+				return
+			end
 			local targetHues = { 3 / 3, 2 / 3, 1 / 3 }
 
 			main.Disco = true
@@ -1289,6 +1294,30 @@ local module = {
 		end,
 	},
 
+	{
+		Name = "gravity",
+		Rank = 3,
+		Args = { "Number" },
+		Function = function(speaker, args)
+			if args[1] > 1000 then
+				args[1] = 1000
+			elseif args[1] < -1000 then
+				args[1] = -1000
+			end
+
+			if not main.OGGravity then
+				main.OGGravity = Environment.Gravity
+			end
+			Environment.Gravity = Vector3.New(0, -args[1], 0)
+		end,
+		UnFunction = function(speaker, args)
+			if main.OGGravity then
+				Environment.Gravity = main.OGGravity
+				main.OGGravity = nil
+			end
+		end,
+	},
+
 	-- headadmin --
 
 	{
@@ -1300,11 +1329,17 @@ local module = {
 		VisibleArgs = { "FullUsername", "Reason" },
 		Args = { "FullUsername", "String" },
 		Function = function(speaker, args)
+			main.Notification(speaker, main.Format("Banning %s...", args[1]), "Silent")
+
 			local userid = main.GetUserIDFromName(args[1])
 
 			if not userid then
 				main.Notification(speaker, main.Format("Failed to find user %s.", args[1]), "Error")
 				return
+			end
+
+			if args[2] == "" then
+				args[2] = "No reason provided."
 			end
 
 			if playerHandler.GetGlobalRank(userid) > playerHandler.GetRank(speaker) then
@@ -1317,11 +1352,10 @@ local module = {
 			end
 
 			local bans = Datastore:GetDatastore("SaltBans")
-			if args[2] == "" then
-				args[2] = "No reason provided."
-			end
-
 			bans:SetAsync(userid .. "Reason" .. main.BanDSTesting, args[2])
+
+			main.UpdateBanList(bans, userid, false, args[2])
+
 			bans:Disconnect()
 
 			if Players:FindChild(args[1]) then
@@ -1340,6 +1374,8 @@ local module = {
 		VisibleArgs = { "FullUsername", "Days", "Reason" },
 		Args = { "String", "Number", "String" },
 		Function = function(speaker, args)
+			main.Notification(speaker, main.Format("Temp banning %s...", args[1]), "Silent")
+
 			local userid = main.GetUserIDFromName(args[1])
 
 			if not userid then
@@ -1366,13 +1402,20 @@ local module = {
 			local bans = Datastore:GetDatastore("SaltBans")
 			bans:SetAsync(userid .. "Reason" .. main.BanDSTesting, args[3])
 			bans:SetAsync(userid .. "Time" .. main.BanDSTesting, os.time() + length)
+
+			main.UpdateBanList(bans, userid, false, args[3], os.time() + length)
+
 			bans:Disconnect()
 
 			if Players:FindChild(args[1]) then
 				playerHandler.HandleBan(Players:FindChild(args[1]), args[3], os.time() + length)
 			end
 
-			main.Notification(speaker, main.Format("Successfully banned %s for %s days.", args[1], args[2]), "Info")
+			main.Notification(
+				speaker,
+				main.Format("Successfully temp banned %s for %s days.", args[1], args[2]),
+				"Info"
+			)
 		end,
 	},
 
@@ -1398,13 +1441,20 @@ local module = {
 		VisibleArgs = { "FullUsername" },
 		Args = { "String" },
 		Function = function(speaker, args)
-			local userid = main.GetUserIDFromName(args[1])
+			main.Notification(speaker, main.Format("Unbanning %s...", args[1]), "Silent")
+
+			local userid
+			if tonumber(args[1]) then
+				userid = args[1]
+			else
+				userid = main.GetUserIDFromName(args[1])
+			end
 
 			if userid then
 				local wasSBanned = false
 
 				if main.ServerBanned[userid] then
-					main.Notification(speaker, main.Format("Un server banned %s.", args[1]), "Info")
+					main.Notification(speaker, main.Format("Removed server ban for %s.", args[1]), "Info")
 					main.ServerBanned[userid] = nil
 					wasSBanned = true
 				end
@@ -1419,6 +1469,8 @@ local module = {
 					pcall(function()
 						bans:RemoveAsync(uid .. "Time" .. main.BanDSTesting)
 					end)
+
+					main.UpdateBanList(bans, userid, true)
 
 					main.Notification(speaker, main.Format("Successfully removed global ban for %s.", args[1]), "Info")
 				elseif not wasSBanned then
