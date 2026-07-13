@@ -22,7 +22,7 @@ settings = {
 	},
 
 	-- FREE ADMIN
-	FreeAdmin = "Mod",
+	FreeAdmin = "",
 
 	--
 	--

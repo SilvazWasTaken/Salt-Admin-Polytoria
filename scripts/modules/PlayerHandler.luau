@@ -5,6 +5,10 @@ local LoadedPlayers = {}
 
 local module = {}
 
+repeat
+	wait()
+until main.Modules
+
 module.PlayerAdded = function(player)
 	local isBanned = module.HandleBan(player)
 	if isBanned == true then
