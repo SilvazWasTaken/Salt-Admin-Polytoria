@@ -9,5 +9,5 @@ It is customizable however, the settings module lets you change the command pref
 
 There is lots of quality of life features too, like being able to run multiple commands in one message, auto filling player names, and "all"/"others" player target
 
-[Get it](https://github.com/SilvazWasTaken/Salt-Admin-Polytoria/releases/latest)
+[Get it](https://github.com/SilvazWasTaken/Salt-Admin-Polytoria/releases/download/Release/Salt.Admin.ptmd)
 
