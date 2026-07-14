@@ -86,7 +86,7 @@ Hooks.Updated:Connect(function(dt)
 		flyHelp.Position = flyHelp.Position + GetNextMovement()
 		flyHelp.Rotation = Vector3.New(-cam.Rotation.X, cam.Rotation.Y + 180, -cam.Rotation.Z)
 
-		if Vector3.Distance(Players.LocalPlayer.Position, flyHelp.Position) > 5 then -- account for teleporting
+		if Vector3.Distance(Players.LocalPlayer.Position, flyHelp.Position) > 15 then -- account for teleporting
 			flyHelp.Position = Players.LocalPlayer.Position
 			flyHelp.Rotation = Players.LocalPlayer.Rotation
 		end
