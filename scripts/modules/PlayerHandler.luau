@@ -106,10 +106,7 @@ module.PlayerAdded = function(player)
 				return
 			end
 
-			local owns = pcall(function()
-				return Purchases:OwnsItemAsync(player, tonumber(id))
-			end)
-
+			local owns = Purchases:OwnsItemAsync(player, tonumber(id))
 			if owns and rankNumber > highestGamepassRank then
 				highestGamepassRank = rankNumber
 			end

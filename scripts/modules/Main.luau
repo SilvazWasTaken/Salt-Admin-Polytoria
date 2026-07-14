@@ -184,7 +184,7 @@ main.RefreshRanks = function()
 
 	local rankPlayers = {}
 
-	for _, p in ipairs(Players:GetPlayers()) do
+	for _, p in pairs(Players:GetPlayers()) do
 		local rank = playerHandler.GetRank(p)
 
 		if rank > 0 then
@@ -200,7 +200,7 @@ main.RefreshRanks = function()
 	end
 	table.sort(ranks)
 
-	for _, rank in ipairs(ranks) do
+	for _, rank in pairs(ranks) do
 		local playerTable = rankPlayers[rank]
 
 		local categoryUI = main.Modules.Storage.Category:Clone()
