@@ -207,7 +207,7 @@ main.RefreshRanks = function()
 		categoryUI.Text.Text = main.GetRankName(rank) .. " [" .. rank .. "]"
 		categoryUI.Parent = scroll
 
-		for _, player in ipairs(playerTable) do
+		for _, player in pairs(playerTable) do
 			local playerUI = main.Modules.Storage.PlayerRank:Clone()
 			playerUI.UILabel.Text = "" .. player.Name
 
