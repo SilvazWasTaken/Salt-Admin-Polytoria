@@ -225,14 +225,14 @@ network.InvokedClient:Connect(function(data)
 		GUI:WaitChild("CmdBar2"):WaitChild("ExecuteButton").Clicked:Connect(function()
 			local data = NetMessage.New()
 			data:AddString("Function", "CmdBar")
-			data:AddString("String1", GUI.CmdBar2.UITextInput.Text)
+			data:AddString("String1", string.sub(GUI.CmdBar2.UITextInput.Text, 1, 200))
 			network:InvokeServer(data)
 		end)
 
 		GUI:WaitChild("CommandInput").Submitted:Connect(function()
 			local data = NetMessage.New()
 			data:AddString("Function", "CmdBar")
-			data:AddString("String1", GUI.CommandInput.Text)
+			data:AddString("String1", string.sub(GUI.CommandInput.Text, 1, 200))
 			network:InvokeServer(data)
 
 			GUI.CommandInput.Visible = false

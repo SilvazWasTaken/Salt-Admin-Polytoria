@@ -1145,6 +1145,9 @@ local module = {
 		Alias = { "playbackSpeed" },
 		Args = { "Number" },
 		Function = function(speaker, args)
+			if args[1] > 100 then
+				args[1] = 100
+			end
 			local saltAudio = Environment:FindChild("SaltAudio")
 			if saltAudio then
 				saltAudio.Pitch = args[1]
