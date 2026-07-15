@@ -230,9 +230,10 @@ module.Parse = function(speaker, originalMessage)
 			argString ..= " " .. arg
 		end
 
+		local log = main.Settings.Prefix .. commandName .. argString
 		table.insert(main.Logs, {
 			["Time"] = os.time(),
-			["Command"] = main.Settings.Prefix .. commandName .. argString,
+			["Command"] = string.sub(log, 1, 150),
 			["Speaker"] = speaker.Name,
 		})
 
