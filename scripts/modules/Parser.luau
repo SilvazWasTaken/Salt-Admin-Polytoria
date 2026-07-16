@@ -128,6 +128,9 @@ module.Parse = function(speaker, originalMessage)
 	local message = string.gsub(string.lower(originalMessage), "%c", "")
 	local messageCap = string.gsub(originalMessage, "%c", "")
 
+	local playerHandler = main.GetModule("PlayerHandler")
+	local rank = playerHandler.GetRank(speaker)
+
 	if not checkPrefix(string.sub(message, 1, 1), true) then
 		return
 	end
@@ -195,7 +198,7 @@ module.Parse = function(speaker, originalMessage)
 		end
 
 		if commandPrefix ~= settings.Prefix then
-			if main.Settings.WarnIncorrectPrefix then
+			if main.Settings.WarnIncorrectPrefix and rank > 0 then
 				main.Notification(
 					speaker,
 					main.Format("Invalid prefix! Try %s%s instead.", settings.Prefix, commandName),
@@ -204,13 +207,17 @@ module.Parse = function(speaker, originalMessage)
 			end
 			return
 		elseif not main.Commands[commandName] then
-			main.Notification(speaker, main.Format("'%s' is not a valid command!", commandName), "Error")
+			if rank > 0 then
+				main.Notification(speaker, main.Format("'%s' is not a valid command!", commandName), "Error")
+			end
 			return
 		elseif
 			main.commandsExecuted[speaker]
 			and main.commandsExecuted[speaker] >= settings.CommandLimitPerMinute / main.commandsExecutedDivider
 		then
-			main.Notification(speaker, "Sending commands too fast!", "Error")
+			if rank > 0 then
+				main.Notification(speaker, "Sending commands too fast!", "Error")
+			end
 			return
 		elseif main.GetModule("PlayerHandler").GetRank(speaker) < fullCommand.Rank then
 			main.Notification(
