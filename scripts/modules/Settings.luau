@@ -47,11 +47,20 @@ settings = {
 	Cmdbar = 1, -- The minimum rank required to use the Cmdbar.
 	Cmdbar2 = 3, -- The minimum rank required to use the Cmdbar2.
 
+	-- COOLDOWN COMMANDS
+	CommandCooldownsByName = { -- seconds
+		--[[
+			["music"] = 10,
+		--]]
+	},
+
 	-- MODIFY COMMANDS
 	SetCommandRankByName = {
-		--[[["fling"] = 5,
-		["fly"] = 5,
-		["kill"] = 5,--]]
+		--[[
+			["fling"] = 5,
+			["fly"] = 5,
+			["kill"] = 5,
+		--]]
 	},
 }
 

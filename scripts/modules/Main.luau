@@ -101,6 +101,13 @@ main.MakeGUI = function()
 			end
 		end
 
+		if main.Settings.CommandCooldownsByName then
+			local cooldown = main.Settings.CommandCooldownsByName[command.Name]
+			if cooldown then
+				command.Cooldown = cooldown
+			end
+		end
+
 		if not CategorizedCommands[command.Rank + 1] then
 			CategorizedCommands[command.Rank + 1] = {}
 		end
@@ -472,6 +479,20 @@ main.ExecuteCommand = function(command, speaker, args, unFunction)
 		end)
 	end
 	if not unFunction and command.Function then
+		if command.Cooldown and command.LastRan and os.clock() - command.LastRan < command.Cooldown then
+			main.Notification(
+				speaker,
+				main.Format(
+					"The command '%s' is currently on cooldown (%s seconds)!",
+					command.Name,
+					math.round(command.Cooldown - (os.clock() - command.LastRan))
+				),
+				"Error"
+			)
+			return
+		end
+		command.LastRan = os.clock()
+
 		pcall(function()
 			spawn(command.Function, speaker, args)
 		end)
