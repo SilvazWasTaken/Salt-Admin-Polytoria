@@ -437,6 +437,10 @@ local module = {
 			local expl = Instance.New("Explosion")
 			expl.Position = args[1].Position
 			expl.Parent = Environment
+			spawn(function()
+				wait(2)
+				expl:Destroy()
+			end)
 			args[1]:Kill()
 			flying = false
 			ourRocket:Destroy()
@@ -480,6 +484,11 @@ local module = {
 				local expl = Instance.New("Explosion")
 				expl.Position = args[1].Position
 				expl.Parent = Environment
+
+				spawn(function()
+					wait(2)
+					expl:Destroy()
+				end)
 			end)
 
 			wait(2)
@@ -571,6 +580,11 @@ local module = {
 			expl.Position = args[1].Position
 			expl.Parent = Environment
 			args[1]:Kill()
+
+			spawn(function()
+				wait(2)
+				expl:Destroy()
+			end)
 		end,
 	},
 
@@ -766,6 +780,11 @@ local module = {
 				local expl = Instance.New("Explosion")
 				expl.Position = args[1].Position
 				expl.Parent = Environment
+
+				spawn(function()
+					wait(2)
+					expl:Destroy()
+				end)
 			end
 			args[1].CanMove = true
 			wait(4)
@@ -1156,6 +1175,77 @@ local module = {
 			if saltAudio then
 				saltAudio.Pitch = args[1]
 			end
+		end,
+	},
+
+	{
+		Name = "nuke",
+		Rank = 3,
+		Args = { "Player" },
+		Function = function(speaker, args)
+			for _, plr in pairs(Players:GetPlayers()) do
+				plr:Kill()
+				local expl = Instance.New("Explosion")
+				expl.Position = plr.Position
+				expl.Parent = Environment
+
+				spawn(function()
+					wait(2)
+					expl:Destroy()
+				end)
+			end
+
+			main.Modules.Storage.Audio.NuclearExplosion:Play()
+
+			local nuke = main.Modules.Storage.Nuke:Clone()
+			nuke.Parent = Environment
+			nuke.Position = args[1].Position
+
+			local function doAnim(obj, size)
+				local t = Tween.NewTween()
+				t:TweenSize(obj, size, 5)
+			end
+
+			local ball = nuke:FindChild("Ball")
+			local ball2 = ball:Clone()
+			local ring = nuke:FindChild("Ring")
+			local ring2 = ring:Clone()
+
+			doAnim(ball, Vector3.New(500, 500, 500))
+			doAnim(ring, Vector3.New(50, 50, 10))
+
+			spawn(function()
+				wait(1)
+				ball2.Parent = nuke
+				doAnim(ball2, Vector3.New(500, 500, 500))
+				wait(2)
+				ring2.Parent = nuke
+				doAnim(ring2, Vector3.New(50, 50, 10))
+				wait(2)
+				local t = Tween.NewTween()
+				t:TweenColor(ring.Color, Color.New(0, 0, 0, 0), 3, function(t)
+					ring.Color = t
+					ring2.Color = t
+				end)
+			end)
+
+			for _, c in pairs(nuke:GetChildren()) do
+				if string.find(c.Name, "Cloud") then
+					local t = Tween.NewTween()
+					t:TweenColor(c.Color, Color.New(0.2, 0.2, 0.2, 0), 10, function(t)
+						c.Color = t
+					end)
+				end
+			end
+
+			wait(15)
+			local t = Tween.NewTween()
+			t:TweenColor(ball.Color, Color.New(0, 0, 0, 0), 3, function(t)
+				ball.Color = t
+				ball2.Color = t
+			end)
+			wait(3)
+			nuke:Destroy()
 		end,
 	},
 
