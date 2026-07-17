@@ -24,8 +24,9 @@
 				- Type ;cmds to view the commands list
 				
 			Updating:
-				- To preserve settings, replace [Salt Admin > Loader] with the updated Loader
-				- If you have no settings you wish to preserve, just delete [Salt Admin] and replace it with the updated one
+				- If you have modified settings, copy them to your clipboard
+				- Delete the old Salt Admin model, import the new one
+				- Paste back in the settings
 				
 			Advanced users:
 				To rank player via script:
