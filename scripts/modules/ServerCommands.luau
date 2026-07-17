@@ -863,7 +863,7 @@ local module = {
 		Function = function(speaker, args)
 			spawn(function()
 				while wait(0.35) do
-					if args[1].IsDead then
+					if not args[1] or not args[1].Health or args[1].IsDead then
 						break
 					end
 
