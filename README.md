@@ -6,7 +6,7 @@ Admin system. Has 85+ commands ranging from moderation to silly :3
 - There is lots of quality of life features too, like being able to run multiple commands in one message, auto filling player names, and "all"/"others" player target
 
 ## Setup
-Import the model, put it into Environment
+Import the model, put it into ScriptService or Environment
 
 Optionally, change the settings by detaching the model and changing them in [Salt Admin > Settings]
 

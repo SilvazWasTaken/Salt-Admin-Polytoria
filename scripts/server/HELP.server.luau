@@ -13,7 +13,7 @@
 			GITHUB: https://github.com/SilvazWasTaken/Salt-Admin-Polytoria
 			
 			Get started:
-				- You don't need to edit anything to get Salt Admin running, just leave it in Environment
+				- You don't need to edit anything to get Salt Admin running, just leave it in Environment or ScriptService
 				- Optionally, you can change the settings [Salt Admin > Settings]
 				- For advanced users, you can read the code [Salt Admin > Loader > Modules]
 				- It is advised to not edit the code as Salt Admin will be updated frequently
