@@ -397,8 +397,10 @@ local module = {
 			end)
 
 			wait(1)
-			if jail then
-				args[1].Position = jail.Position
+			if jail and jail.Position then
+				pcall(function()
+					args[1].Position = jail.Position
+				end)
 			end
 		end,
 		UnFunction = function(speaker, args)
