@@ -238,7 +238,7 @@ module.GetPlayer = function(name)
 			return plr
 		end
 	end
-	warn("Could not find player " .. tostring(name))
+	--warn("Could not find player " .. tostring(name))
 	return nil
 end
 
