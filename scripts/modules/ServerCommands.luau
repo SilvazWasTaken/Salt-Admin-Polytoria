@@ -1117,6 +1117,8 @@ local module = {
 			else
 				main.Notification("all", main.Format("Now playing %s", args[1]), "Silent")
 			end
+			wait(0.1)
+			saltAudio:Play()
 		end,
 		UnFunction = function(speaker, args)
 			local saltAudio = Environment:FindChild("SaltAudio")
