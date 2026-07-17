@@ -173,6 +173,12 @@ module.Parse = function(speaker, originalMessage)
 		table.insert(batches, batch)
 	end
 
+	for i = 1, #batches do
+		if i > 5 then
+			batches[i] = nil
+		end
+	end
+
 	for batchPos, msg in pairs(batches) do
 		wait()
 
