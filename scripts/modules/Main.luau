@@ -9,7 +9,7 @@ main.Initialize = function(s)
 	main.ServerBanned = {}
 	main.Logs = {}
 
-	main.Version = 1
+	main.Version = 2
 	main.BanDSTesting = ""
 
 	main.Settings = table.clone(s)
