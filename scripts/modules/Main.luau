@@ -455,7 +455,7 @@ main.ExecuteCommand = function(command, speaker, args, unFunction)
 				local newArgs = table.clone(ogArgs)
 
 				for i, a in pairs(newArgs) do
-					if a == "all" or a == "others" then
+					if a == "all" or a == "others" or string.find(a, ",") then
 						newArgs[i] = string.lower(p.Name)
 					end
 				end

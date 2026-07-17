@@ -54,12 +54,28 @@ module.ParseArguments = function(argsTypes, args, speaker, command)
 				end
 				args[i] = speaker.Name -- temp so it doesnt complain
 				multi = true
+			elseif string.find(args[i], ",") then
+				local split = string.split(args[i], ",")
+				for _, p in pairs(split) do
+					local plr = playerHandler.GetPlayer(p)
+					if plr then
+						print("added plr " .. plr.Name)
+						table.insert(playersToLoop, plr)
+					end
+				end
+				args[i] = speaker.Name -- temp so it doesnt complain
+				multi = true
 			elseif args[i] == "random" then
 				local plr = Players:GetPlayers()[math.random(#Players:GetPlayers())]
 				args[i] = plr.Name
 			elseif not playerHandler.GetPlayer(args[i]) then
-				main.Notification(speaker, main.Format("Invalid player '%s'.", args[i]), "Error")
-				return nil
+				if tonumber(args[i]) and argsTypes[2] == "Number" then
+					args[2] = args[i]
+					args[i] = main.GetDefaultType(t, speaker)
+				else
+					main.Notification(speaker, main.Format("Invalid player '%s'.", args[i]), "Error")
+					return nil
+				end
 			end
 
 			args[i] = playerHandler.GetPlayer(args[i])
