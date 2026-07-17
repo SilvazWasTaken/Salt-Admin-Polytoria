@@ -608,7 +608,10 @@ local module = {
 		Rank = 2,
 		Args = { "Player", "Number" },
 		Function = function(speaker, args)
-			local item = Insert:ToolAsync(args[2])
+			local item
+			pcall(function()
+				item = Insert:ToolAsync(args[2])
+			end)
 			if item then
 				item.Parent = args[1].Inventory
 			end
@@ -902,7 +905,10 @@ local module = {
 		Rank = 3,
 		Args = { "Number" },
 		Function = function(speaker, args)
-			local model = Insert:ModelAsync(args[1])
+			local model
+			pcall(function()
+				model = Insert:ModelAsync(args[1])
+			end)
 
 			if model then
 				model.Parent = main.Debris
