@@ -158,6 +158,10 @@ local module = {
 				["RightLegColor"] = true,
 			}
 
+			if character:FindChild("OGCOLHeadColor") then
+				return
+			end -- already invis
+
 			for c, _ in pairs(list) do
 				local cValue = Instance.New("ColorValue")
 				cValue.Name = "OGCOL" .. c
