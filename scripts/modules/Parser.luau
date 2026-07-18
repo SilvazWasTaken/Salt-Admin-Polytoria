@@ -58,8 +58,12 @@ module.ParseArguments = function(argsTypes, args, speaker, command)
 				local split = string.split(args[i], ",")
 				for _, p in pairs(split) do
 					local plr = playerHandler.GetPlayer(p)
-					if plr then
-						print("added plr " .. plr.Name)
+
+					if p == "me" then
+						plr = speaker
+					end
+
+					if plr and not table.find(playersToLoop, plr) then
 						table.insert(playersToLoop, plr)
 					end
 				end
