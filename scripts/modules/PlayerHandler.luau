@@ -62,7 +62,7 @@ module.PlayerAdded = function(player)
 				if type(p) == "string" and player.Name == p then
 					foundRank = r[1]
 				elseif type(p) == "number" and player.UserID == p then
-					foundRank = r[2]
+					foundRank = r[1]
 				end
 			end
 		end
